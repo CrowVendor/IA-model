@@ -1,11 +1,14 @@
 import java.io.File;
-import java.io.Scanner;
+import java.util.Scanner;
+import java.util.ArrayList;
 public class interactiveActivation{
-  private static final String L_SEG = "placeholder.txt"
-  private static Arraylist<Boolean[]> uc;
+  private static final String L_SEG = "letter_segmentation.txt";
+  private static ArrayList<boolean[]> uc;
   public static void main(String[] args){
-    File segs = new File(L_SEG);
-    Scanner s_segs = new Scanner(segs);
+    uc = new ArrayList<boolean[]>();
+    try{
+      File segs = new File(L_SEG);
+      Scanner s_segs = new Scanner(segs);
 
     while(s_segs.hasNextLine()){
       String curLine = s_segs.nextLine();
@@ -14,36 +17,19 @@ public class interactiveActivation{
       for(int i = 0; i<temp_segs.length; i++){
         if(temp_segs[i].equals("0")){
           thisLetter[i] = false;
-        }else{
+        }else if(temp_segs[i].equals("1")){
           thisLetter[i] = true;
+        }else{
+          System.out.println("Problem! Have:" + temp_segs[i]);
         }
       }
       uc.add(thisLetter);
     }
+    System.out.println(uc.get(0)[5]);
+  }catch(Exception e){
+    System.out.println(e);
+    System.exit(1);
   }
-
-  public load
 }
-
-
-
-public class Unit{
-  private ArrayList<Unit> connections;
-  private boolean on;
-  private Unit(Int level){
-    on=False
-  }
-  public void addConnection(Unit connect){
-    connections.append(connect)
-  }
-  public ArrayList<Unit> getConnections(){
-    return connnections;
-  }
-  public void turnOn(){
-    on=True;
-  }
-  public boolean isOn(){
-    return on;
-  }
 
 }
