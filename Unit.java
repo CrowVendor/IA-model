@@ -1,7 +1,7 @@
 public class Unit{
   private ArrayList<Unit> connections;
   private boolean on;
-  private Unit(int level){
+  public Unit(int level){
     on = false;
   }
   public void addConnection(Unit connect){
