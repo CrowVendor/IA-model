@@ -47,7 +47,7 @@ public void setActivation(double a){
 public void addInput(double i){
      netInput += i;
 }
-public void getNet(){
+public double getNet(){
      return netInput;
 }
   public Character getLetter(int position) throws Exception{

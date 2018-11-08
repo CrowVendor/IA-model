@@ -2,11 +2,18 @@ import java.io.File;
 import java.util.Scanner;
 import java.util.ArrayList;
 public class interactiveActivation{
-     private static final double alphaFL, alphaLW, alphaWL, gammaFL, gammaLW, gammaWW, gammaLL = 0.005, 0.07, 0.3, 0.15, 0.04, 0.21, 0;
+     private static final double alphaFL = 0.005;
+     private static final double alphaLW = 0.07;
+     private static final double alphaWL = 0.3;
+     private static final double gammaFL = 0.15;
+     private static final double gammaLW = 0.04;
+     private static final double gammaWW = 0.21;
+     private static final double gammaLL = 0;
      private static final double max = 1.0;
      private static final double min = -0.2;
      private static final double decay = 0.07;
-     private static final double oscaleW, oscaleL = 20, 10;
+     private static final double oscaleW = 20;
+     private static final double oscaleL = 10;
 
      private static final String L_SEG = "letter_segmentation.txt";
      private static ArrayList<boolean[]> uc;
