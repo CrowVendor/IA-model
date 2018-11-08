@@ -2,12 +2,19 @@ import java.io.File;
 import java.util.Scanner;
 import java.util.ArrayList;
 public class interactiveActivation{
+     private static final double alphaFL, alphaLW, alphaWL, gammaFL, gammaLW, gammaWW, gammaLL = 0.005, 0.07, 0.3, 0.15, 0.04, 0.21, 0;
+     private static final double max = 1.0;
+     private static final double min = -0.2;
+     private static final double decay = 0.07;
+     private static final double oscaleW, oscaleL = 20, 10;
+
      private static final String L_SEG = "letter_segmentation.txt";
      private static ArrayList<boolean[]> uc;
      private static ArrayList<ArrayList<Unit>> featureLevel;
      private static ArrayList<ArrayList<Unit>> letterLevel;
      private static ArrayList<Unit> wordLevel;
      private static String input;
+     private static final int WLEN = 4;
 
      public static void main(String[] args){
           uc = new ArrayList<boolean[]>();
@@ -23,6 +30,43 @@ public class interactiveActivation{
 
 
      }
+
+     private static void interact(boolean[][] input){
+
+     }
+     private static void featureToLetter(boolean[][] input){
+          for(int i = 0; i<WLEN; i++){
+               for(int j = 0; j<14; j++){
+                    Unit feature = featureLevel.get(i).get(j);
+                    if(input[i][j]){
+                         ArrayList<Unit> excitedLetters = feature.getEConnections();
+                         for(Unit excited : excitedLetters){
+                              excited.addInput(alphaFL);
+                         }
+                         ArrayList<Unit> inhibitedLetters = feature.getIConnections();
+                         for(Unit inhibited : inhibitedLetters){
+                              inhibited.addInput(-gammaFL);
+                         }
+                    }
+               }
+               for(Unit letter : letterLevel.get(i)){
+                    double net = letter.getNet();
+                    double act = letter.getActivation();
+                    double delta = 0.0;
+                    if(net > 0.0){
+                         delta = (max - act) * net - (decay * act);
+                    }else{
+                         delta = (act - min) * net - (decay * act);
+                    }
+                    letter.addActivation(delta);
+                    if(letter.getActivation() > max){
+                         letter.setActivation(max);
+                    }else if(letter.getActivation() < min){
+                         letter.setActivation(min);
+                    }
+               }
+          }
+     }
      private static void instantiateFeatureConnections(){
           for(int i = 0; i<4; i++){
                ArrayList<Unit> position_features = featureLevel.get(i);
@@ -31,14 +75,14 @@ public class interactiveActivation{
                     Unit feature = position_features.get(j);
                     for(int k = 0; k<26; k++){
                          if (uc.get(k)[j]){
-                              feature.addConnection(.005);
+                              feature.addConnection(position_letters.get(k), true);
                          } else {
-                              feature.addConnection(-.15);
+                              feature.addConnection(position_letters.get(k), false);
                          }
                     }
-                    position_features.add(feature);
+                    //position_features.add(feature);
                }
-               featureLevel.add(position_features);
+               //featureLevel.add(position_features);
           }
      }
      private static void instantiateLetterConnections(){
@@ -49,9 +93,9 @@ public class interactiveActivation{
              Unit letter = position_letters.get(j);
              for(Unit word : wordLevel){
                if(word.getLetter(i)==(char)(j+97)){
-                 letter.addConnection(.07);
+                 letter.addConnection(word, true);
                } else {
-                 letter.addConnection(-.04);
+                 letter.addConnection(word, false);
                }
              }
            }
