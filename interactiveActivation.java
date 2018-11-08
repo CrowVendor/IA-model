@@ -6,6 +6,7 @@ public class interactiveActivation{
      private static ArrayList<boolean[]> uc;
      private static ArrayList<ArrayList<Unit>> featureLevel;
      private static ArrayList<ArrayList<Unit>> letterLevel;
+     private static ArrayList<Unit> wordLevel;
      private static String input;
 
      public static void main(String[] args){
@@ -13,12 +14,11 @@ public class interactiveActivation{
           loadSegs();
           input = args[0].toLowerCase();
           //boolean[][] featureLevel = new boolean[4][28];
-          int ind = 0;
-          for(char letter : input){
+          for(int i =0; i<input.length(); i++){
+               char letter = input.charAt(i);
                int index = (int)letter - 97;
                boolean[] segs = uc.get(index);
-               featureLevel[ind] = segs;
-               ind ++;
+               //featureLevel[i] = segs;
           }
 
 
@@ -30,36 +30,67 @@ public class interactiveActivation{
                for (int j = 0; j<14; j++){
                     Unit feature = position_features.get(j);
                     for(int k = 0; k<26; k++){
-                         if (uc[k][j]){
+                         if (uc.get(k)[j]){
                               feature.addConnection(.005);
                          } else {
                               feature.addConnection(-.15);
                          }
                     }
-                    position_features.append(feature);
+                    position_features.add(feature);
                }
-               featureLevel.append(position_features)
+               featureLevel.add(position_features);
           }
+     }
+     private static void instantiateLetterConnections(){
+       try{
+         for(int i = 0; i<4; i++){
+           ArrayList<Unit> position_letters = letterLevel.get(i);
+           for(int j=0; j<26; j++){
+             Unit letter = position_letters.get(j);
+             for(Unit word : wordLevel){
+               if(word.getLetter(i)==(char)(j+97)){
+                 letter.addConnection(.07);
+               } else {
+                 letter.addConnection(-.04);
+               }
+             }
+           }
+         }
+       } catch(Exception e){
+         System.out.println(e);
+         System.exit(1);
+       }
      }
      private static void instantiateNetwork(){
           //currently makes features and letters, and connections between
           for(int i = 0; i<4; i++){
-               ArrayList<Unit> position_features = new ArrayList<Unit>;
+               ArrayList<Unit> position_features = new ArrayList<Unit>();
                for (int j = 0; j<14; j++){
-                    Unit feature = new Unit();
-                    position_features.append(feature);
+                    Unit feature = new Unit(0);
+                    position_features.add(feature);
                }
-               featureLevel.append(position_features)
+               featureLevel.add(position_features);
           }
           for(int i = 0; i<4; i++){
-               ArrayList<Unit> position_letters = new ArrayList<Unit>;
+               ArrayList<Unit> position_letters = new ArrayList<Unit>();
                for (int j = 0; j<26; j++){
-                    Unit letter = new Unit();
-                    position_letters.append(feature);
+                    Unit letter = new Unit(1);
+                    position_letters.add(letter);
                }
-               letterLevel.append(position_features)
+               letterLevel.add(position_letters);
           }
-          instantiateFeatureConnections()
+          try{
+            Scanner wordScan = new Scanner(new File("testwords.txt"));
+            String[] lexicon = wordScan.nextLine().split(",");
+            for(String word : lexicon){
+              wordLevel.add(new Unit(2, word));
+            }
+          } catch(Exception e){
+            System.out.println(e);
+            System.exit(1);
+          }
+          instantiateFeatureConnections();
+          instantiateLetterConnections();
      }
 
      private static void loadSegs(){
