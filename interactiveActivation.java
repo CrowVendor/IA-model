@@ -4,29 +4,62 @@ import java.util.ArrayList;
 public class interactiveActivation{
      private static final String L_SEG = "letter_segmentation.txt";
      private static ArrayList<boolean[]> uc;
+     private static ArrayList<ArrayList<Unit>> featureLevel;
+     private static ArrayList<ArrayList<Unit>> letterLevel;
      private static String input;
 
      public static void main(String[] args){
           uc = new ArrayList<boolean[]>();
           loadSegs();
-          if(args.length<1){
-               System.out.println("Enter an input word.");
-               return;
-          }
           input = args[0].toLowerCase();
-
+          //boolean[][] featureLevel = new boolean[4][28];
+          int ind = 0;
           for(char letter : input){
                int index = (int)letter - 97;
                boolean[] segs = uc.get(index);
-
-               
+               featureLevel[ind] = segs;
+               ind ++;
           }
 
 
      }
-
+     private static void instantiateFeatureConnections(){
+          for(int i = 0; i<4; i++){
+               ArrayList<Unit> position_features = featureLevel.get(i);
+               ArrayList<Unit> position_letters = letterLevel.get(i);
+               for (int j = 0; j<14; j++){
+                    Unit feature = position_features.get(j);
+                    for(int k = 0; k<26; k++){
+                         if (uc[k][j]){
+                              feature.addConnection(.005);
+                         } else {
+                              feature.addConnection(-.15);
+                         }
+                    }
+                    position_features.append(feature);
+               }
+               featureLevel.append(position_features)
+          }
+     }
      private static void instantiateNetwork(){
-
+          //currently makes features and letters, and connections between
+          for(int i = 0; i<4; i++){
+               ArrayList<Unit> position_features = new ArrayList<Unit>;
+               for (int j = 0; j<14; j++){
+                    Unit feature = new Unit();
+                    position_features.append(feature);
+               }
+               featureLevel.append(position_features)
+          }
+          for(int i = 0; i<4; i++){
+               ArrayList<Unit> position_letters = new ArrayList<Unit>;
+               for (int j = 0; j<26; j++){
+                    Unit letter = new Unit();
+                    position_letters.append(feature);
+               }
+               letterLevel.append(position_features)
+          }
+          instantiateFeatureConnections()
      }
 
      private static void loadSegs(){
