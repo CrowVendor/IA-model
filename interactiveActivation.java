@@ -1,6 +1,9 @@
 import java.io.File;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.util.Collections;
 public class interactiveActivation{
      private static final double alphaFL = 0.005;
      private static final double alphaLW = 0.07;
@@ -16,8 +19,9 @@ public class interactiveActivation{
      private static final double oscaleL = 10;
 
      private static final String L_SEG = "letter_segmentation.txt";
-     private static final String W_FILE = "testwords.txt";
+     private static final String W_FILE = "combined_possibles.txt";//"testwords.txt";
      private static ArrayList<boolean[]> uc;
+     private static String[] lexicon;
      private static ArrayList<ArrayList<Unit>> featureLevel;
      private static ArrayList<ArrayList<Unit>> letterLevel;
      private static ArrayList<Unit> wordLevel;
@@ -27,22 +31,43 @@ public class interactiveActivation{
           uc = new ArrayList<boolean[]>();
           loadSegs();
           instantiateNetwork();
-          String[] words = loadWords(args[0]);
-          for (String word : words){
-               boolean[][] input = loadWord(word);
-               interact(input);
-               System.out.println("INPUT: "+word);
-               try{
-                    for(Unit word_try : wordLevel){
-                         System.out.println(word_try.getWord()+": "+word_try.getActivation());
-                    }
-               } catch(Exception e){
-                    System.out.println(e);
-                    System.exit(1);
-               }
-          }
+          modelWord(args[0], 100, 10);
+          //modelWord(args[1], 100, 10);
      }
-
+     private static void modelWord(String word, int cycles, int num_results){
+          ArrayList<ArrayList<Double>> results = new ArrayList<ArrayList<Double>>();
+          boolean[][] input = loadWord(word);
+          try{
+               BufferedWriter bw = new BufferedWriter(new FileWriter("testresults.txt"));
+               bw.close();
+          } catch(Exception e){
+               System.out.println(e);
+               System.exit(1);
+          }
+          for(int i = 0; i<cycles; i++){
+               interact(input);
+               results.add(getOutput());
+               //writeOutput("testresults.txt");
+          }
+          ArrayList<Double> finalResults = results.get(results.size()-1);
+          ArrayList<Integer> indices = new ArrayList<Integer>();
+          for(int i =0; i<finalResults.size(); i++){
+               indices.add(i);
+          }
+          Collections.sort(indices, new unitComparator(finalResults));
+          ArrayList<ArrayList<Double>> top_results = new ArrayList<ArrayList<Double>>();
+          ArrayList<String> top_words = new ArrayList<String>();
+          for(int i=0; i<num_results;i++){
+               ArrayList<Double> top_result = new ArrayList<Double>();
+               int index = indices.get(indices.size()-i-1);
+               top_words.add(lexicon[index]);
+               for(int j=0; j<results.size();j++){
+                    top_result.add(results.get(j).get(index));
+               }
+               top_results.add(top_result);
+          }
+          writeOutput(top_results, "testresults.txt", top_words);
+     }
      private static boolean[][] loadWord(String word){
           if (word.length()!=WLEN){
                System.out.println("Incorrect word size, invalid input");
@@ -55,6 +80,30 @@ public class interactiveActivation{
                input[i]=uc.get(index);
           }
           return input;
+     }
+     private static void writeOutput(ArrayList<ArrayList<Double>> top_results, String filename, ArrayList<String> top_words){
+          try{
+               BufferedWriter bw = new BufferedWriter(new FileWriter(filename, true));
+               for(int i=0;i<top_results.size();i++){
+                    bw.append(top_words.get(i));
+                    for(double result : top_results.get(i)){
+                         bw.append(", "+result);
+                    }
+                    bw.newLine();
+                    bw.flush();
+               }
+               bw.close();
+          } catch(Exception e){
+               System.out.println(e);
+               System.exit(1);
+          }
+     }
+     private static ArrayList<Double> getOutput(){
+          ArrayList<Double> results = new ArrayList<Double>();
+          for(Unit word : wordLevel){
+               results.add(word.getActivation());
+          }
+          return results;
      }
 
      private static void interact(boolean[][] input){
@@ -213,6 +262,16 @@ public class interactiveActivation{
                System.exit(1);
           }
      }
+     private static void clearNetwork(){
+          for(ArrayList<Unit> letters : letterLevel){
+               for(Unit letter : letters){
+                    letter.setActivation(0.0);
+               }
+          }
+          for(Unit word : wordLevel){
+               word.setActivation(0.0);
+          }
+     }
      private static void instantiateNetwork(){
           featureLevel = new ArrayList<ArrayList<Unit>>();
           letterLevel = new ArrayList<ArrayList<Unit>>();
@@ -234,7 +293,7 @@ public class interactiveActivation{
                letterLevel.add(position_letters);
           }
           try{
-               String[] lexicon = loadWords(W_FILE);
+               lexicon = loadWords(W_FILE);
                for(String word : lexicon){
                     wordLevel.add(new Unit(2, word));
                }
@@ -247,11 +306,17 @@ public class interactiveActivation{
      }
 
      private static String[] loadWords(String filename){
-          //NOTE: where to split on? be consistent?
+          //NOTE: where to split on? be consistent? currently splits on lines
           try{
                Scanner wordScan = new Scanner(new File(filename));
-               String[] words = wordScan.nextLine().replace(" ", "").split(",");
-               return words;
+               int i=0;
+               ArrayList<String> words = new ArrayList<String>();
+               while(wordScan.hasNextLine()){
+                    words.add(wordScan.nextLine());
+               }
+               //String[] words = wordScan.nextLine().replace(" ", "").split("\n");
+               //System.out.println(words[1]);
+               return words.toArray(new String[words.size()]);
           } catch (Exception e){
                System.out.println(e);
                System.exit(1);
