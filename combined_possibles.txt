@@ -979,9 +979,9 @@ yarn
 yell
 dial
 fort
-Golf
+golf
 logo
-Mark
+mark
 matt
 plug
 tech

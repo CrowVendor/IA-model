@@ -6,13 +6,10 @@ public class Unit{
      private String word;
      private double activation;
      private double netInput;
+     private int language;
 
      public Unit(int level){
-          this.level=level;
-          activation = 0.0;
-          netInput = 0.0;
-          excitatoryConnections=new ArrayList<Unit>();
-          inhibitoryConnections=new ArrayList<Unit>();
+          this(level, null);
      }
      public Unit(int level, String word){
           this.word=word;
@@ -22,6 +19,15 @@ public class Unit{
           excitatoryConnections=new ArrayList<Unit>();
           inhibitoryConnections=new ArrayList<Unit>();
      }
+     /*public Unit(int level, String word, int language){
+          this.language=language;
+          this.word=word;
+          this.level=level;
+          activation = 0.0;
+          netInput = 0.0;
+          excitatoryConnections=new ArrayList<Unit>();
+          inhibitoryConnections=new ArrayList<Unit>();
+     }*/
      public void addConnection(Unit connect, boolean exc){
           if(exc){
                excitatoryConnections.add(connect);

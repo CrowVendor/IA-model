@@ -4,27 +4,35 @@ import java.util.ArrayList;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.util.Collections;
-public class interactiveActivation{
+public class bilingualInteractiveActivation extends interactiveActivation{
      private static final double alphaFL = 0.005;
      private static final double alphaLW = 0.07;
      private static final double alphaWL = 0.3;
+     private static final double alphaWLa = 0.3; //NOTE: what should this be?
      private static final double gammaFL = 0.15;
      private static final double gammaLW = 0.04;
      private static final double gammaWW = 0.21;
      private static final double gammaLL = 0;
+     private static final double gammaLa1W = 0;//NOTE: what should this be?
+     private static final double gammaLa2W = 0;//NOTE: what should this be?
+
      private static final double max = 1.0;
      private static final double min = -0.2;
      private static final double decay = 0.07;
      private static final double oscaleW = 20;
      private static final double oscaleL = 10;
 
+     private static String[] lexicon1;
+     private static String[] lexicon2;
+     private static final String W_FILE1 = "combined_possibles.txt";//"testwords.txt";
+     private static final String W_FILE2 = "combined_dutch_possibles.txt";//"testwords.txt";
      private static final String L_SEG = "letter_segmentation.txt";
-     private static final String W_FILE = "combined_possibles.txt";//"testwords.txt";
      private static ArrayList<boolean[]> uc;
-     private static String[] lexicon;
      private static ArrayList<ArrayList<Unit>> featureLevel;
      private static ArrayList<ArrayList<Unit>> letterLevel;
-     private static ArrayList<Unit> wordLevel;
+     private static ArrayList<Unit> wordLevel1;
+     private static ArrayList<Unit> wordLevel2;
+     private static ArrayList<Unit> languageLevel;
      private static final int WLEN = 4;
 
      public static void main(String[] args){
@@ -65,27 +73,18 @@ public class interactiveActivation{
           for(int i=0; i < num_results;i++){
                ArrayList<Double> top_result = new ArrayList<Double>();
                int index = indices.get(indices.size()-i-1);
-               top_words.add(lexicon[index]);
+               if(index >= lexicon1.length){
+                    top_words.add("DUTCH: "+lexicon2[index - lexicon1.length]);
+               } else {
+                    top_words.add("ENGLISH: "+lexicon1[index]);
+               }
                for(int j=0; j<results.size();j++){
                     top_result.add(results.get(j).get(index));
                }
                top_results.add(top_result);
           }
-          writeOutput(top_results, "testresults.txt", top_words);
+          writeOutput(top_results, "testresults2.txt", top_words);
 
-     }
-     private static boolean[][] loadWord(String word){
-          if (word.length()!=WLEN){
-               System.out.println("Incorrect word size, invalid input");
-               System.exit(1);
-          }
-          boolean[][] input = new boolean[WLEN][14];
-          for (int i = 0; i<WLEN; i++){
-               char letter = word.charAt(i);
-               int index = (int)letter - 97;
-               input[i]=uc.get(index);
-          }
-          return input;
      }
      private static void writeOutput(ArrayList<ArrayList<Double>> top_results, String filename, ArrayList<String> top_words){
           try{
@@ -106,7 +105,10 @@ public class interactiveActivation{
      }
      private static ArrayList<Double> getOutput(){
           ArrayList<Double> results = new ArrayList<Double>();
-          for(Unit word : wordLevel){
+          for(Unit word : wordLevel1){
+               results.add(word.getActivation());
+          }
+          for(Unit word : wordLevel2){
                results.add(word.getActivation());
           }
           return results;
@@ -116,6 +118,8 @@ public class interactiveActivation{
           featureToLetter(input);
           letterToWord();
           wordToLetter();
+          wordToLanguage();
+          languageToWord();
           wordToWord();
           letterToLetter();
           update();
@@ -127,11 +131,20 @@ public class interactiveActivation{
                     letter.setInput(0.0);
                }
           }
-          for(Unit word : wordLevel){
+          for(Unit word : wordLevel1){
                updateUnitActivation(word);
                word.setInput(0.0);
           }
+          for(Unit word : wordLevel2){
+               updateUnitActivation(word);
+               word.setInput(0.0);
+          }
+          for(Unit language : languageLevel){
+               updateUnitActivation(language);
+               language.setInput(0.0);
+          }
      }
+
      private static void featureToLetter(boolean[][] input){
           for(int i = 0; i<WLEN; i++){
                for(int j = 0; j<14; j++){
@@ -182,14 +195,52 @@ public class interactiveActivation{
                }
           }
      }
+     private static void wordToLanguage(){
+          for(Unit word : wordLevel1){
+               if(word.getActivation()>0.0){
+                    languageLevel.get(0).addInput(word.getActivation()*alphaWLa);
+               }
+          }
+          for(Unit word : wordLevel2){
+               if(word.getActivation()>0.0){
+                    languageLevel.get(1).addInput(word.getActivation()*alphaWLa);
+               }
+          }
+     }
+     private static void languageToWord(){
+          double act1 = languageLevel.get(0).getActivation();
+          double act2 = languageLevel.get(1).getActivation();
+          if(act2>0.0){
+               for(Unit word : wordLevel1){
+                    word.addInput(act2 * -gammaLa2W);
+               }
+          }
+          if(act1>0.0){
+               for(Unit word : wordLevel2){
+                    word.addInput(act1 * -gammaLa1W);
+               }
+          }
+     }
      private static void wordToWord(){
           double sum = 0.0;
-          for(Unit word : wordLevel){
+          for(Unit word : wordLevel1){
                if(word.getActivation() > 0){
                     sum += word.getActivation();
                }
           }
-          for(Unit word : wordLevel){
+          for(Unit word : wordLevel2){
+               if(word.getActivation() > 0){
+                    sum += word.getActivation();
+               }
+          }
+          for(Unit word : wordLevel1){
+               double total = sum;
+               if(word.getActivation()>0){
+                    total -= word.getActivation();
+               }
+               word.addInput(total * -gammaWW);
+          }
+          for(Unit word : wordLevel2){
                double total = sum;
                if(word.getActivation()>0){
                     total -= word.getActivation();
@@ -230,57 +281,13 @@ public class interactiveActivation{
                a.setActivation(min);
           }
      }
-     private static void instantiateFeatureConnections(){
-          for(int i = 0; i<4; i++){
-               ArrayList<Unit> position_features = featureLevel.get(i);
-               ArrayList<Unit> position_letters = letterLevel.get(i);
-               for (int j = 0; j<14; j++){
-                    Unit feature = position_features.get(j);
-                    for(int k = 0; k<26; k++){
-                         if (uc.get(k)[j]){
-                              feature.addConnection(position_letters.get(k), true);
-                         } else {
-                              feature.addConnection(position_letters.get(k), false);
-                         }
-                    }
-               }
-          }
-     }
-     private static void instantiateLetterConnections(){
-          try{
-               for(int i = 0; i<4; i++){
-                    ArrayList<Unit> position_letters = letterLevel.get(i);
-                    for(int j=0; j<26; j++){
-                         Unit letter = position_letters.get(j);
-                         for(Unit word : wordLevel){
-                              //System.out.println(word);
-                              if(word.getLetter(i)==(char)(j+97)){
-                                   letter.addConnection(word, true);
-                              } else {
-                                   letter.addConnection(word, false);
-                              }
-                         }
-                    }
-               }
-          } catch(Exception e){
-               System.out.println(e);
-               System.exit(1);
-          }
-     }
-     private static void clearNetwork(){
-          for(ArrayList<Unit> letters : letterLevel){
-               for(Unit letter : letters){
-                    letter.setActivation(0.0);
-               }
-          }
-          for(Unit word : wordLevel){
-               word.setActivation(0.0);
-          }
-     }
+
      private static void instantiateNetwork(){
           featureLevel = new ArrayList<ArrayList<Unit>>();
           letterLevel = new ArrayList<ArrayList<Unit>>();
-          wordLevel = new ArrayList<Unit>();
+          wordLevel1 = new ArrayList<Unit>();
+          wordLevel2 = new ArrayList<Unit>();
+          languageLevel = new ArrayList<Unit>();
           for(int i = 0; i<4; i++){
                ArrayList<Unit> position_features = new ArrayList<Unit>();
                for (int j = 0; j<14; j++){
@@ -298,18 +305,63 @@ public class interactiveActivation{
                letterLevel.add(position_letters);
           }
           try{
-               lexicon = loadWords(W_FILE);
-               for(String word : lexicon){
-                    wordLevel.add(new Unit(2, word));
+               lexicon1 = loadWords(W_FILE1);
+               for(String word : lexicon1){
+                    wordLevel1.add(new Unit(2, word));
+               }
+               lexicon2 = loadWords(W_FILE2);
+               for(String word : lexicon2){
+                    wordLevel2.add(new Unit(2, word));
                }
           } catch(Exception e){
                System.out.println(e);
                System.exit(1);
           }
+          languageLevel.add(new Unit(3));
+          languageLevel.add(new Unit(3));
           instantiateFeatureConnections();
           instantiateLetterConnections();
      }
-
+     private static void instantiateFeatureConnections(){
+          for(int i = 0; i<4; i++){
+               ArrayList<Unit> position_features = featureLevel.get(i);
+               ArrayList<Unit> position_letters = letterLevel.get(i);
+               for (int j = 0; j<14; j++){
+                    Unit feature = position_features.get(j);
+                    for(int k = 0; k<26; k++){
+                         if (uc.get(k)[j]){
+                              feature.addConnection(position_letters.get(k), true);
+                         } else {
+                              feature.addConnection(position_letters.get(k), false);
+                         }
+                    }
+               }
+          }
+     }
+     private static void instantiateLetterConnections(){
+          instantiateLetterWordConnections(wordLevel1);
+          instantiateLetterWordConnections(wordLevel2);
+     }
+     private static void instantiateLetterWordConnections(ArrayList<Unit> wordLevel){
+          try{
+               for(int i = 0; i<4; i++){
+                    ArrayList<Unit> position_letters = letterLevel.get(i);
+                    for(int j=0; j<26; j++){
+                         Unit letter = position_letters.get(j);
+                         for(Unit word : wordLevel){
+                              if(word.getLetter(i)==(char)(j+97)){
+                                   letter.addConnection(word, true);
+                              } else {
+                                   letter.addConnection(word, false);
+                              }
+                         }
+                    }
+               }
+          } catch(Exception e){
+               System.out.println(e);
+               System.exit(1);
+          }
+     }
      private static String[] loadWords(String filename){
           //NOTE: where to split on? be consistent? currently splits on lines
           try{
@@ -327,6 +379,19 @@ public class interactiveActivation{
                System.exit(1);
                return null;
           }
+     }
+     private static boolean[][] loadWord(String word){
+          if (word.length()!=WLEN){
+               System.out.println("Incorrect word size, invalid input");
+               System.exit(1);
+          }
+          boolean[][] input = new boolean[WLEN][14];
+          for (int i = 0; i<WLEN; i++){
+               char letter = word.charAt(i);
+               int index = (int)letter - 97;
+               input[i]=uc.get(index);
+          }
+          return input;
      }
      private static void loadSegs(){
           try{
@@ -353,5 +418,17 @@ public class interactiveActivation{
                System.exit(1);
           }
      }
-
+     private static void clearNetwork(){
+          for(ArrayList<Unit> letters : letterLevel){
+               for(Unit letter : letters){
+                    letter.setActivation(0.0);
+               }
+          }
+          for(Unit word : wordLevel1){
+               word.setActivation(0.0);
+          }
+          for(Unit word : wordLevel2){
+               word.setActivation(0.0);
+          }
+     }
 }
