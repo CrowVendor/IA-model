@@ -5,6 +5,8 @@ public class Unit{
      private int level;
      private String word;
      private double activation;
+     private double avgActivation;
+     private static final double oRate = 0.5;
      private double netInput;
      private int language;
 
@@ -14,6 +16,7 @@ public class Unit{
      public Unit(int level, String word){
           this.word=word;
           this.level=level;
+          avgActivation = 0.0;
           activation = 0.0;
           netInput = 0.0;
           excitatoryConnections=new ArrayList<Unit>();
@@ -46,6 +49,13 @@ public class Unit{
      }
      public void addActivation(double a){
           activation += a;
+          updateRunningAverage();
+     }
+     private void updateRunningAverage(){
+          avgActivation = (oRate * activation) + ((1-oRate) * avgActivation);
+     }
+     public double getResponseStrength(double oscale){
+          return Math.exp(oscale * avgActivation);
      }
      public void setActivation(double a){
           activation = a;

@@ -21,6 +21,7 @@ public class bilingualInteractiveActivation extends interactiveActivation{
      private static final double decay = 0.07;
      private static final double oscaleW = 20;
      private static final double oscaleL = 10;
+     private static final double resultsThreshold = 1;
 
      private static String[] lexicon1;
      private static String[] lexicon2;
