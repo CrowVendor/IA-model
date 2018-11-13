@@ -1,0 +1,201 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6700) (preloaded format=pdflatex 2018.11.13)  13 NOV 2018 16:25
+entering extended mode
+**./cogsci_template.tex
+(cogsci_template.tex
+LaTeX2e <2018-04-01> patch level 5
+("/Library/Application Support/MiKTeX/texmfs/install/tex/latex/base/article.cls
+"
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+("/Library/Application Support/MiKTeX/texmfs/install/tex/latex/base/size10.clo"
+File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count80
+\c@section=\count81
+\c@subsection=\count82
+\c@subsubsection=\count83
+\c@paragraph=\count84
+\c@subparagraph=\count85
+\c@figure=\count86
+\c@table=\count87
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+) (cogsci.sty
+Conference Style for COGSCI -- last modified October 24, 2006
+)
+("/Library/Application Support/MiKTeX/texmfs/install/tex/latex/pslatex/pslatex.
+sty"
+Package: pslatex 1996/07/24 v1.2 pslatex emulation (DPC)
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 65.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> OT1/ptmcm/m/n on input line 65.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/ptmcm/m/n on input line 65.
+LaTeX Font Info:    Redeclaring symbol font `letters' on input line 66.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `normal'
+(Font)                  OML/cmm/m/it --> OML/ptmcm/m/it on input line 66.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/cmm/b/it --> OML/ptmcm/m/it on input line 66.
+LaTeX Font Info:    Redeclaring symbol font `symbols' on input line 67.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> OMS/pzccm/m/n on input line 67.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> OMS/pzccm/m/n on input line 67.
+LaTeX Font Info:    Redeclaring symbol font `largesymbols' on input line 68.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> OMX/psycm/m/n on input line 68.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> OMX/psycm/m/n on input line 68.
+\symbold=\mathgroup4
+\symitalic=\mathgroup5
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 74.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> OT1/ptm/bx/n on input line 74.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/ptm/bx/n on input line 74.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 75.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> OT1/ptm/m/it on input line 75.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> OT1/ptm/m/it on input line 75.
+) (apacite.sty
+Package: apacite 2012/02/25 v6.01 APA citation
+\c@BibCnt=\count88
+\bibleftmargin=\skip43
+\bibindent=\skip44
+\bibparsep=\skip45
+\bibitemsep=\skip46
+\biblabelsep=\skip47
+) (cogsci_template.aux)
+\openout1 = `cogsci_template.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OMS/pzccm/m/n on input line 37.
+LaTeX Font Info:    Try loading font information for OMS+pzccm on input line 37
+.
+
+("/Library/Application Support/MiKTeX/texmfs/install/tex/latex/psnfss/omspzccm.
+fd"
+File: omspzccm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/pzccm.
+)
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+\c@maskedRefs=\count89
+
+("/Library/Application Support/MiKTeX/texmfs/install/tex/latex/apacite/english.
+apc"
+File: english.apc 2013/07/21 v6.03 apacite language file
+LaTeX Info: Redefining \BPBI on input line 129.
+LaTeX Info: Redefining \BHBI on input line 130.
+)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 39.
+LaTeX Font Info:    Try loading font information for OT1+ptmcm on input line 39
+.
+
+("/Library/Application Support/MiKTeX/texmfs/install/tex/latex/psnfss/ot1ptmcm.
+fd"
+File: ot1ptmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ptmcm.
+)
+LaTeX Font Info:    Try loading font information for OML+ptmcm on input line 39
+.
+
+("/Library/Application Support/MiKTeX/texmfs/install/tex/latex/psnfss/omlptmcm.
+fd"
+File: omlptmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ptmcm.
+)
+LaTeX Font Info:    Try loading font information for OMX+psycm on input line 39
+.
+
+("/Library/Application Support/MiKTeX/texmfs/install/tex/latex/psnfss/omxpsycm.
+fd"
+File: omxpsycm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/psycm.
+)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 39.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 39.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 39.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 39.
+
+
+LaTeX Warning: Citation `MclellandRumelhart1981a' undefined on input line 43.
+
+
+LaTeX Warning: Citation `DijkstraVanheuven1998a' undefined on input line 43.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 46.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 52.
+
+LaTeX Warning: Citation `DijkstraVanheuven1998a' undefined on input line 64.
+
+
+LaTeX Warning: Citation `MclellandRumelhart1981a' undefined on input line 64.
+
+[1{/Accounts/bremerw/Library/Application Support/MiKTeX/texmfs/data/pdftex/conf
+ig/pdftex.map}
+
+
+
+]
+
+LaTeX Warning: Citation `NewellSimon1972a' undefined on input line 98.
+
+
+LaTeX Warning: Citation `ChalnickBillman1988a' undefined on input line 102.
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 111.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 111.
+
+LaTeX Warning: Citation `Feigenbaum1963a' undefined on input line 188.
+
+
+LaTeX Warning: Citation `Hill1983a' undefined on input line 189.
+
+
+LaTeX Warning: Citation `OhlssonLangley1985a' undefined on input line 190.
+
+
+LaTeX Warning: Citation `Matlock2001' undefined on input line 192.
+
+
+LaTeX Warning: Citation `ShragerLangley1990a' undefined on input line 194.
+
+No file cogsci_template.bbl.
+[2] (cogsci_template.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 954 strings out of 492970
+ 12617 string characters out of 3125629
+ 80747 words of memory out of 3000000
+ 4866 multiletter control sequences out of 15000+200000
+ 34637 words of font info for 69 fonts, out of 3000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 26i,9n,21p,708b,227s stack positions out of 5000i,500n,10000p,200000b,50000s
+{/Library/Application Support/MiKTeX/texmfs/install/fonts/enc/dvips/base/8r.e
+nc}</Library/Application Support/MiKTeX/texmfs/install/fonts/type1/urw/times/ut
+mb8a.pfb></Library/Application Support/MiKTeX/texmfs/install/fonts/type1/urw/ti
+mes/utmr8a.pfb>
+Output written on cogsci_template.pdf (2 pages, 41215 bytes).
+PDF statistics:
+ 18 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+

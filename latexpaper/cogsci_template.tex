@@ -1,0 +1,205 @@
+% 
+% Annual Cognitive Science Conference
+% Sample LaTeX Paper -- Proceedings Format
+% 
+
+% Original : Ashwin Ram (ashwin@cc.gatech.edu)       04/01/1994
+% Modified : Johanna Moore (jmoore@cs.pitt.edu)      03/17/1995
+% Modified : David Noelle (noelle@ucsd.edu)          03/15/1996
+% Modified : Pat Langley (langley@cs.stanford.edu)   01/26/1997
+% Latex2e corrections by Ramin Charles Nakisa        01/28/1997 
+% Modified : Tina Eliassi-Rad (eliassi@cs.wisc.edu)  01/31/1998
+% Modified : Trisha Yannuzzi (trisha@ircs.upenn.edu) 12/28/1999 (in process)
+% Modified : Mary Ellen Foster (M.E.Foster@ed.ac.uk) 12/11/2000
+% Modified : Ken Forbus                              01/23/2004
+% Modified : Eli M. Silk (esilk@pitt.edu)            05/24/2005
+% Modified : Niels Taatgen (taatgen@cmu.edu)         10/24/2006
+% Modified : David Noelle (dnoelle@ucmerced.edu)     11/19/2014
+
+%% Change "letterpaper" in the following line to "a4paper" if you must.
+
+\documentclass[10pt,letterpaper]{article}
+
+\usepackage{cogsci}
+\usepackage{pslatex}
+\usepackage{apacite}
+
+
+\title{Exploring the BIA model}
+\author{{\large \bf Miriam Gorra (gorram@carleton.edu)} \\
+Department of Computer Science, 300 N College St \\
+Northfield, MN 55057 USA
+\AND {\large \bf William Maxon Bremer (bremerw@carleton.edu)} \\
+Department of Computer Science, 300 N College St \\
+Northfield, MN 55057 USA}
+
+
+\begin{document}
+
+\maketitle
+
+
+\begin{abstract}
+Word recognition is so integral a part of our linguistic cognition processes that we barely even acknowledge its existence, despite its clear importance to our language processing skills. The Interactive Activation (IA) model \cite{MclellandRumelhart1981a} was developed as a representation of this process based on the assumption that we move from visual feature recognition to corresponding letters and then to words, in a “spreading activation” style model. The Bilingual Interactive Activation (BIA) model \cite{DijkstraVanheuven1998a} is a modified version of the IA model representing word recognition in bilingual learners. DISCUSS CONCLUSION HERE
+
+
+\textbf{Keywords:}
+add your choice of indexing terms or keywords; kindly use a
+semicolon; between each term
+\end{abstract}
+
+
+\section{Introduction}
+
+Introduction should summarize the following: word recognition as a part of human language cognition, the role of models in increasing understanding of human word recognition, acknowledging the progress in more recent word recognition models while simultaneously discussing the maintained relevance of the older BIA model, our model/differences between our model and others, the experiments we performed with our model, and our results.
+
+
+\section{Background}
+
+Introduction to categories of background information, primarily: Human data and studies, BIA and IA model development, specific implementation information (PDP handbook), any other miscellaneous bits. Discuss how they came together for the implementation of our model and construction of our experiments.
+
+
+\subsection{BIA and IA model development}
+
+Specifically acknowledging the work of \cite{DijkstraVanheuven1998a} (BIA) and \cite{MclellandRumelhart1981a} (IA) in development of their models, results/uses of their models, etc. 
+
+\subsection{Human data}
+
+Work done by Van Heuven in acquiring the relevant human data for this paper. Methods, results etc might be valuable to mention.
+
+\subsection{PDP handbook implementation}
+
+Acknowledge PDP handbook role in specific implementation decisions, such as choice of parameters and as a reference for general structuring decisions, although most of the general structure goes back to the original \cite{MclellandRumelhart1981a} model.
+
+\section{Model}
+
+A discussion of the model as a representation of human cognition. Cite the opinions of modern vs older sources on the model, and discuss assumed corresponding features between actual human cognition and the model. Discuss how/why differences between the two exist. 
+
+\section{Implementation}
+
+A discussion of specific implementation decisions, such as method of representation for individual units, data structures used etc.
+
+\section{Experiments}
+Introduction to experiments.
+\subsection{Test 1}
+Discuss specific test (parameters inputs etc) and then results (tables graphs figures basic discussion etc) 
+\subsection{Test 2}
+repeat as needed
+
+\section{General Discussion}
+Wrap it up, then list all references. \\
+Below I have included all the formatting examples included in the template, use as needed.
+\newpage
+\section{Formalities, Footnotes, and Floats}
+
+Use standard APA citation format. Citations within the text should
+include the author's last name and year. If the authors' names are
+included in the sentence, place only the year in parentheses, as in
+\citeA{NewellSimon1972a}, but otherwise place the entire reference in
+parentheses with the authors and year separated by a comma
+\cite{NewellSimon1972a}. List multiple references alphabetically and
+separate them by semicolons
+\cite{ChalnickBillman1988a,NewellSimon1972a}. Use the
+``et~al.'' construction only after listing all the authors to a
+publication in an earlier reference and for citations with four or
+more authors.
+
+
+\subsection{Footnotes}
+
+Indicate footnotes with a number\footnote{Sample of the first
+footnote.} in the text. Place the footnotes in 9~point type at the
+bottom of the column on which they appear. Precede the footnote block
+with a horizontal rule.\footnote{Sample of the second footnote.}
+
+
+\subsection{Tables}
+
+Number tables consecutively. Place the table number and title (in
+10~point) above the table with one line space above the caption and
+one line space below it, as in Table~\ref{sample-table}. You may float
+tables to the top or bottom of a column, or set wide tables across
+both columns.
+
+\begin{table}[!ht]
+\begin{center}
+\caption{Sample table title.}
+\label{sample-table}
+\vskip 0.12in
+\begin{tabular}{ll}
+\hline
+Error type & Example \\
+\hline
+Take smaller & 63 - 44 = 21 \\
+Always borrow~~~~ & 96 - 42 = 34 \\
+0 - N = N & 70 - 47 = 37 \\
+0 - N = 0 & 70 - 47 = 30 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+\subsection{Figures}
+
+All artwork must be very dark for purposes of reproduction and should
+not be hand drawn. Number figures sequentially, placing the figure
+number and caption, in 10~point, after the figure with one line space
+above the caption and one line space below it, as in
+Figure~\ref{sample-figure}. If necessary, leave extra white space at
+the bottom of the page to avoid splitting the figure and figure
+caption. You may float figures to the top or bottom of a column, or
+set wide figures across both columns.
+
+\begin{figure}[ht]
+\begin{center}
+\fbox{CoGNiTiVe ScIeNcE}
+\end{center}
+\caption{This is a figure.}
+\label{sample-figure}
+\end{figure}
+
+
+\section{Acknowledgments}
+
+Place acknowledgments (including funding information) in a section at
+the end of the paper.
+
+
+\section{References Instructions}
+
+Follow the APA Publication Manual for citation format, both within the
+text and in the reference list, with the following exceptions: (a) do
+not cite the page numbers of any book, including chapters in edited
+volumes; (b) use the same format for unpublished references as for
+published ones. Alphabetize references by the surnames of the authors,
+with single author entries preceding multiple author entries. Order
+references by the same authors by the year of publication, with the
+earliest first.
+
+Use a first level section heading, ``{\bf References}'', as shown
+below. Use a hanging indent style, with the first line of the
+reference flush against the left margin and subsequent lines indented
+by 1/8~inch. Below are example references for a conference paper, book
+chapter, journal article, dissertation, book, technical report, and
+edited volume, respectively.
+
+\nocite{ChalnickBillman1988a}
+\nocite{Feigenbaum1963a}
+\nocite{Hill1983a}
+\nocite{OhlssonLangley1985a}
+% \nocite{Lewis1978a}
+\nocite{Matlock2001}
+\nocite{NewellSimon1972a}
+\nocite{ShragerLangley1990a}
+
+
+\bibliographystyle{apacite}
+
+\setlength{\bibleftmargin}{.125in}
+\setlength{\bibindent}{-\bibleftmargin}
+
+\bibliography{CogSci_Template}
+
+
+\end{document}
