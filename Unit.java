@@ -6,7 +6,7 @@ public class Unit{
      private String word;
      private double activation;
      private double avgActivation;
-     private static final double oRate = 0.5;
+     private static final double oRate = 0.05;
      private double netInput;
      private int language;
 
@@ -50,12 +50,18 @@ public class Unit{
      public void addActivation(double a){
           activation += a;
           updateRunningAverage();
+          //System.out.println(avgActivation);
      }
      private void updateRunningAverage(){
+          //System.out.println(activation);
           avgActivation = (oRate * activation) + ((1-oRate) * avgActivation);
      }
      public double getResponseStrength(double oscale){
+          //System.out.println(avgActivation);
           return Math.exp(oscale * avgActivation);
+     }
+     public void setAvgActivation(double i){
+          avgActivation=i;
      }
      public void setActivation(double a){
           activation = a;

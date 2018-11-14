@@ -12,6 +12,7 @@ public class interactiveActivation{
      private static final double gammaLW = 0.04;
      private static final double gammaWW = 0.21;
      private static final double gammaLL = 0;
+
      private static final double max = 1.0;
      private static final double min = -0.2;
      private static final double decay = 0.07;
@@ -19,34 +20,69 @@ public class interactiveActivation{
      private static final double oscaleL = 10;
 
      private static final String L_SEG = "letter_segmentation.txt";
-     private static final String W_FILE = "combined_possibles.txt";//"testwords.txt";
-     private static ArrayList<boolean[]> uc;
-     private static String[] lexicon;
-     private static ArrayList<ArrayList<Unit>> featureLevel;
-     private static ArrayList<ArrayList<Unit>> letterLevel;
-     private static ArrayList<Unit> wordLevel;
+     private String W_FILE = "combined_possibles.txt";//"testwords.txt";
+     private ArrayList<boolean[]> uc;
+     private String[] lexicon;
+     private ArrayList<ArrayList<Unit>> featureLevel;
+     private ArrayList<ArrayList<Unit>> letterLevel;
+     private ArrayList<Unit> wordLevel;
      private static final int WLEN = 4;
 
-     public static void main(String[] args){
+     public interactiveActivation(String lex){
+          this.W_FILE = lex;
           uc = new ArrayList<boolean[]>();
           loadSegs();
           instantiateNetwork();
-          modelWord(args[0], 100, 10);
-          //modelWord(args[1], 100, 10);
      }
-     private static void modelWord(String word, int cycles, int num_results){
+
+     public double responseTimes(ArrayList<String> words, double threshold){
+          double totalAverage=0;
+          for(String word : words){
+               double average = modelResponseTime(word, threshold);
+               clearNetwork();
+               totalAverage += average;
+          }
+          return totalAverage/words.size();
+     }
+     private int modelResponseTime(String word, double threshold){
+          Unit wordUnit=null;
+          try{
+               for(Unit wordUnitTemp : wordLevel){
+                    if (wordUnitTemp.getWord().equals(word)){
+                         wordUnit=wordUnitTemp;
+                    }
+               }
+          } catch (Exception e) {
+               System.out.println(e);
+               System.exit(1);
+          }
+          if(wordUnit==null){
+               System.out.println("Exception: word not in lexicon");
+               System.exit(1);
+          }
+          boolean[][] input = loadWord(word);
+          double response=0;
+          int cycles = 0;
+          while(response<threshold){
+               interact(input);
+               response = wordUnit.getResponseStrength(oscaleW);
+               cycles++;
+          }
+          return cycles;
+     }
+     public void modelWord(String word, int cycles, int num_results){
           ArrayList<ArrayList<Double>> results = new ArrayList<ArrayList<Double>>();
           boolean[][] input = loadWord(word);
 
           for(int i = 0; i<cycles; i++){
                interact(input);
-               results.add(getOutput());
+               results.add(getActivationOutput());
                //writeOutput("testresults.txt");
           }
           output(results, num_results);
 
      }
-     private static void output(ArrayList<ArrayList<Double>> results, int num_results){
+     private void output(ArrayList<ArrayList<Double>> results, int num_results){
           try{
                BufferedWriter bw = new BufferedWriter(new FileWriter("testresults.txt"));
                bw.close();
@@ -74,20 +110,7 @@ public class interactiveActivation{
           writeOutput(top_results, "testresults.txt", top_words);
 
      }
-     private static boolean[][] loadWord(String word){
-          if (word.length()!=WLEN){
-               System.out.println("Incorrect word size, invalid input");
-               System.exit(1);
-          }
-          boolean[][] input = new boolean[WLEN][14];
-          for (int i = 0; i<WLEN; i++){
-               char letter = word.charAt(i);
-               int index = (int)letter - 97;
-               input[i]=uc.get(index);
-          }
-          return input;
-     }
-     private static void writeOutput(ArrayList<ArrayList<Double>> top_results, String filename, ArrayList<String> top_words){
+     private void writeOutput(ArrayList<ArrayList<Double>> top_results, String filename, ArrayList<String> top_words){
           try{
                BufferedWriter bw = new BufferedWriter(new FileWriter(filename, true));
                for(int i=0;i<top_results.size();i++){
@@ -104,15 +127,22 @@ public class interactiveActivation{
                System.exit(1);
           }
      }
-     private static ArrayList<Double> getOutput(){
+     private ArrayList<Double> getActivationOutput(){
           ArrayList<Double> results = new ArrayList<Double>();
           for(Unit word : wordLevel){
                results.add(word.getActivation());
           }
           return results;
      }
+     private ArrayList<Double> getResponseStrengthOutput(){
+          ArrayList<Double> results = new ArrayList<Double>();
+          for(Unit word : wordLevel){
+               results.add(word.getResponseStrength(oscaleW));
+          }
+          return results;
+     }
 
-     private static void interact(boolean[][] input){
+     private void interact(boolean[][] input){
           featureToLetter(input);
           letterToWord();
           wordToLetter();
@@ -120,7 +150,7 @@ public class interactiveActivation{
           letterToLetter();
           update();
      }
-     private static void update(){
+     private void update(){
           for(int i = 0; i<WLEN; i++){
                for(Unit letter : letterLevel.get(i)){
                     updateUnitActivation(letter);
@@ -132,7 +162,8 @@ public class interactiveActivation{
                word.setInput(0.0);
           }
      }
-     private static void featureToLetter(boolean[][] input){
+
+     private void featureToLetter(boolean[][] input){
           for(int i = 0; i<WLEN; i++){
                for(int j = 0; j<14; j++){
                     ArrayList<Unit> features = featureLevel.get(i);
@@ -150,7 +181,7 @@ public class interactiveActivation{
                }
           }
      }
-     private static void letterToWord(){
+     private void letterToWord(){
           for(int i = 0; i < WLEN; i++){
                for(int j = 0; j < 26; j++){
                     Unit letter = letterLevel.get(i).get(j);
@@ -169,7 +200,7 @@ public class interactiveActivation{
 
 
      }
-     private static void wordToLetter(){
+     private void wordToLetter(){
           for(int i = 0; i < WLEN; i++){
                for(int j = 0; j < 26; j++){
                     Unit letter = letterLevel.get(i).get(j);
@@ -182,7 +213,7 @@ public class interactiveActivation{
                }
           }
      }
-     private static void wordToWord(){
+     private void wordToWord(){
           double sum = 0.0;
           for(Unit word : wordLevel){
                if(word.getActivation() > 0){
@@ -197,7 +228,7 @@ public class interactiveActivation{
                word.addInput(total * -gammaWW);
           }
      }
-     private static void letterToLetter(){
+     private void letterToLetter(){
           for(int i = 0; i < WLEN; i++){
                double sum = 0.0;
                for(Unit letter : letterLevel.get(i)){
@@ -214,7 +245,7 @@ public class interactiveActivation{
                }
           }
      }
-     private static void updateUnitActivation(Unit a){
+     private void updateUnitActivation(Unit a){
           double net = a.getNet();
           double act = a.getActivation();
           double delta = 0.0;
@@ -230,54 +261,8 @@ public class interactiveActivation{
                a.setActivation(min);
           }
      }
-     private static void instantiateFeatureConnections(){
-          for(int i = 0; i<4; i++){
-               ArrayList<Unit> position_features = featureLevel.get(i);
-               ArrayList<Unit> position_letters = letterLevel.get(i);
-               for (int j = 0; j<14; j++){
-                    Unit feature = position_features.get(j);
-                    for(int k = 0; k<26; k++){
-                         if (uc.get(k)[j]){
-                              feature.addConnection(position_letters.get(k), true);
-                         } else {
-                              feature.addConnection(position_letters.get(k), false);
-                         }
-                    }
-               }
-          }
-     }
-     private static void instantiateLetterConnections(){
-          try{
-               for(int i = 0; i<4; i++){
-                    ArrayList<Unit> position_letters = letterLevel.get(i);
-                    for(int j=0; j<26; j++){
-                         Unit letter = position_letters.get(j);
-                         for(Unit word : wordLevel){
-                              //System.out.println(word);
-                              if(word.getLetter(i)==(char)(j+97)){
-                                   letter.addConnection(word, true);
-                              } else {
-                                   letter.addConnection(word, false);
-                              }
-                         }
-                    }
-               }
-          } catch(Exception e){
-               System.out.println(e);
-               System.exit(1);
-          }
-     }
-     private static void clearNetwork(){
-          for(ArrayList<Unit> letters : letterLevel){
-               for(Unit letter : letters){
-                    letter.setActivation(0.0);
-               }
-          }
-          for(Unit word : wordLevel){
-               word.setActivation(0.0);
-          }
-     }
-     private static void instantiateNetwork(){
+
+     private void instantiateNetwork(){
           featureLevel = new ArrayList<ArrayList<Unit>>();
           letterLevel = new ArrayList<ArrayList<Unit>>();
           wordLevel = new ArrayList<Unit>();
@@ -309,8 +294,45 @@ public class interactiveActivation{
           instantiateFeatureConnections();
           instantiateLetterConnections();
      }
+     private void instantiateFeatureConnections(){
+          for(int i = 0; i<4; i++){
+               ArrayList<Unit> position_features = featureLevel.get(i);
+               ArrayList<Unit> position_letters = letterLevel.get(i);
+               for (int j = 0; j<14; j++){
+                    Unit feature = position_features.get(j);
+                    for(int k = 0; k<26; k++){
+                         if (uc.get(k)[j]){
+                              feature.addConnection(position_letters.get(k), true);
+                         } else {
+                              feature.addConnection(position_letters.get(k), false);
+                         }
+                    }
+               }
+          }
+     }
+     private void instantiateLetterConnections(){
+          try{
+               for(int i = 0; i<4; i++){
+                    ArrayList<Unit> position_letters = letterLevel.get(i);
+                    for(int j=0; j<26; j++){
+                         Unit letter = position_letters.get(j);
+                         for(Unit word : wordLevel){
+                              //System.out.println(word);
+                              if(word.getLetter(i)==(char)(j+97)){
+                                   letter.addConnection(word, true);
+                              } else {
+                                   letter.addConnection(word, false);
+                              }
+                         }
+                    }
+               }
+          } catch(Exception e){
+               System.out.println(e);
+               System.exit(1);
+          }
+     }
 
-     private static String[] loadWords(String filename){
+     private String[] loadWords(String filename){
           //NOTE: where to split on? be consistent? currently splits on lines
           try{
                Scanner wordScan = new Scanner(new File(filename));
@@ -328,7 +350,20 @@ public class interactiveActivation{
                return null;
           }
      }
-     private static void loadSegs(){
+     private boolean[][] loadWord(String word){
+          if (word.length()!=WLEN){
+               System.out.println("Incorrect word size, invalid input");
+               System.exit(1);
+          }
+          boolean[][] input = new boolean[WLEN][14];
+          for (int i = 0; i<WLEN; i++){
+               char letter = word.charAt(i);
+               int index = (int)letter - 97;
+               input[i]=uc.get(index);
+          }
+          return input;
+     }
+     private void loadSegs(){
           try{
                File segs = new File(L_SEG);
                Scanner s_segs = new Scanner(segs);
@@ -354,4 +389,16 @@ public class interactiveActivation{
           }
      }
 
+     private void clearNetwork(){
+          for(ArrayList<Unit> letters : letterLevel){
+               for(Unit letter : letters){
+                    letter.setActivation(0.0);
+                    letter.setAvgActivation(0.0);
+               }
+          }
+          for(Unit word : wordLevel){
+               word.setActivation(0.0);
+               word.setAvgActivation(0.0);
+          }
+     }
 }

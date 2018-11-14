@@ -82,7 +82,6 @@ days
 home
 john
 week
-had]
 room
 tell
 able
@@ -987,3 +986,4 @@ plug
 tech
 toll
 vice
+hawk
