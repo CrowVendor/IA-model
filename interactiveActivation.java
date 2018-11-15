@@ -20,7 +20,7 @@ public class interactiveActivation{
      private static final double oscaleL = 10;
 
      private static final String L_SEG = "letter_segmentation.txt";
-     private String W_FILE = "combined_possibles.txt";//"testwords.txt";
+     private String W_FILE;// = "totalCombined.txt";//"combined_possibles.txt";//"testwords.txt";
      private ArrayList<boolean[]> uc;
      private String[] lexicon;
      private ArrayList<ArrayList<Unit>> featureLevel;
@@ -35,6 +35,14 @@ public class interactiveActivation{
           instantiateNetwork();
      }
 
+     public ArrayList<Integer> modelSequenceResponseTimes(ArrayList<String> words, double threshold){
+          clearNetwork();
+          ArrayList<Integer> results = new ArrayList<Integer>();
+          for (String word : words){
+               results.add(modelResponseTime(word, threshold));
+          }
+          return results;
+     }
      public double responseTimes(ArrayList<String> words, double threshold){
           double totalAverage=0;
           for(String word : words){
@@ -57,15 +65,21 @@ public class interactiveActivation{
                System.exit(1);
           }
           if(wordUnit==null){
-               System.out.println("Exception: word not in lexicon");
+               System.out.println("Exception: word: "+word+" not in lexicon");
                System.exit(1);
           }
           boolean[][] input = loadWord(word);
           double response=0;
+          double probability=0;
           int cycles = 0;
-          while(response<threshold){
+          while(probability<threshold){
                interact(input);
+               double totalResponse = 0.0;
+               for(Unit wordUnitTemp : wordLevel){
+                    totalResponse+=wordUnitTemp.getResponseStrength(oscaleW);
+               }
                response = wordUnit.getResponseStrength(oscaleW);
+               probability = response/totalResponse;
                cycles++;
           }
           return cycles;
@@ -165,17 +179,24 @@ public class interactiveActivation{
 
      private void featureToLetter(boolean[][] input){
           for(int i = 0; i<WLEN; i++){
+               ArrayList<Unit> features = featureLevel.get(i);
                for(int j = 0; j<14; j++){
-                    ArrayList<Unit> features = featureLevel.get(i);
                     Unit feature = features.get(j);
+                    ArrayList<Unit> excitedLetters = feature.getEConnections();
+                    ArrayList<Unit> inhibitedLetters = feature.getIConnections();
                     if(input[i][j]){
-                         ArrayList<Unit> excitedLetters = feature.getEConnections();
                          for(Unit excited : excitedLetters){
                               excited.addInput(alphaFL);
                          }
-                         ArrayList<Unit> inhibitedLetters = feature.getIConnections();
                          for(Unit inhibited : inhibitedLetters){
                               inhibited.addInput(-gammaFL);
+                         }
+                    } else{
+                         for(Unit excited : excitedLetters){
+                              excited.addInput(-gammaFL);
+                         }
+                         for(Unit inhibited : inhibitedLetters){
+                              inhibited.addInput(alphaFL);
                          }
                     }
                }

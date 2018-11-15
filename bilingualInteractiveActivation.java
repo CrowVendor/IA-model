@@ -13,8 +13,8 @@ public class bilingualInteractiveActivation{
      private static final double gammaLW = 0.04;
      private static final double gammaWW = 0.21;
      private static final double gammaLL = 0;
-     private static final double gammaLa1W = .03 ;//according to paper NOTE: what should this be?
-     private static final double gammaLa2W = 0;//according to paper NOTE: what should this be?
+     private static final double gammaLa1W = 0 ;//according to paper NOTE: what should this be?
+     private static final double gammaLa2W = 0.03;//according to paper NOTE: what should this be?
 
      private static final double max = 1.0;
      private static final double min = -0.2;
@@ -24,8 +24,8 @@ public class bilingualInteractiveActivation{
 
      private String[] lexicon1;
      private String[] lexicon2;
-     private String W_FILE1 = "combined_possibles.txt";//"testwords.txt";
-     private String W_FILE2 = "combined_dutch_possibles.txt";//"testwords.txt";
+     private String W_FILE1; //= "combined_possibles.txt";//"testwords.txt";
+     private String W_FILE2;// = "combined_dutch_possibles.txt";//"testwords.txt";
      private static final String L_SEG = "letter_segmentation.txt";
      private ArrayList<boolean[]> uc;
      private ArrayList<ArrayList<Unit>> featureLevel;
@@ -43,18 +43,31 @@ public class bilingualInteractiveActivation{
           instantiateNetwork();
      }
 
+     public ArrayList<Integer> modelSequenceResponseTimes(ArrayList<String> words, double threshold, int language){
+          clearNetwork();
+          ArrayList<Integer> results = new ArrayList<Integer>();
+          int i = 0;
+          for (String word : words){
+               if(language==0){
+                    results.add(modelResponseTime(word, threshold, (i % 2)+1));
+                    i++;
+               } else {
+                    results.add(modelResponseTime(word, threshold, language));
+               }
+          }
+          return results;
+     }
      public double responseTimes(ArrayList<String> words, double threshold, int language){
           double totalAverage=0;
           for(String word : words){
-               double average = modelResponseTime(word, threshold, language);
-               System.out.println(average);
                clearNetwork();
+               double average = modelResponseTime(word, threshold, language);
+               //System.out.println(average);
                totalAverage += average;
           }
           return totalAverage/words.size();
      }
      private int modelResponseTime(String word, double threshold, int language){
-          System.out.println(word);
           Unit wordUnit=null;
           try{
                if(language == 1){
@@ -78,7 +91,7 @@ public class bilingualInteractiveActivation{
                System.exit(1);
           }
           if(wordUnit==null){
-               System.out.println("Exception: word not in lexicon");
+               System.out.println("Exception: word: "+word+" not in lexicon");
                System.exit(1);
           }
           boolean[][] input = loadWord(word);
@@ -232,8 +245,8 @@ public class bilingualInteractiveActivation{
 
      private void featureToLetter(boolean[][] input){
           for(int i = 0; i<WLEN; i++){
+               ArrayList<Unit> features = featureLevel.get(i);
                for(int j = 0; j<14; j++){
-                    ArrayList<Unit> features = featureLevel.get(i);
                     Unit feature = features.get(j);
                     ArrayList<Unit> inhibitedLetters = feature.getIConnections();
                     ArrayList<Unit> excitedLetters = feature.getEConnections();
@@ -520,8 +533,8 @@ public class bilingualInteractiveActivation{
                }
           }
           for(Unit word : wordLevel1){
-               word.setActivation(0.0);
-               word.setAvgActivation(0.0);
+               word.setActivation(-0.3);
+               word.setAvgActivation(-0.3);
           }
           for(Unit word : wordLevel2){
                word.setActivation(0.0);
