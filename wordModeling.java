@@ -7,8 +7,8 @@ public class wordModeling{
           interactiveActivation ia = new interactiveActivation("totalCombined.txt");
           bilingualInteractiveActivation bia = new bilingualInteractiveActivation("combined_possibles.txt", "combined_dutch_possibles.txt");
           ArrayList<String> files = new ArrayList<>(Arrays.asList("smallEnglish","largeEnglish","smallDutch","largeDutch"));
-          //testResponses(ia, bia, files)
-          testSequenceResponses(ia, bia, files);
+          testResponses(ia, bia, files);
+          //testSequenceResponses(ia, bia, files);
 
           //System.out.println(ia.responseTimes(testwords, 20));
           //ia.modelWord("aunt", 50, 10);
@@ -41,9 +41,9 @@ public class wordModeling{
      private static void testResponses(interactiveActivation ia, bilingualInteractiveActivation bia, ArrayList<String> files){
           ArrayList<Integer> languages = new ArrayList<>(Arrays.asList(1,1,2,2));
           for(String filename : files){
-               ArrayList<String> testwords = parseFile(filename, "english");
-               System.out.println("IA-"+filename+": "+bia.responseTimes(testwords, .9, 1));
-               System.out.println("BIA-"+filename+": "+ia.responseTimes(testwords, .9));
+               ArrayList<String> testwords = parseFile(filename, "dutch");
+               System.out.println("IA-"+filename+": "+ia.responseTimes(testwords, .9, 2));
+               System.out.println("BIA-"+filename+": "+bia.responseTimes(testwords, .9));
           }
      }
      private static ArrayList<String> parseFile(String filename, String folder){

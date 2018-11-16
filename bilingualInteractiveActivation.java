@@ -114,7 +114,6 @@ public class bilingualInteractiveActivation{
                }
                response = wordUnit.getResponseStrength(oscaleW);
                probability = response/totalResponse;
-               //System.out.println(totalResponse);
                cycles++;
           }
           return cycles;
