@@ -8,13 +8,13 @@ public class bilingualInteractiveActivation{
      private static final double alphaFL = 0.005;
      private static final double alphaLW = 0.07;
      private static final double alphaWL = 0.3;
-     private static final double alphaWLa = 0.3; //NOTE: what should this be?
+     private static final double alphaWLa = 0.3;
      private static final double gammaFL = 0.15;
      private static final double gammaLW = 0.04;
      private static final double gammaWW = 0.21;
      private static final double gammaLL = 0;
-     private static final double gammaLa1W = 0 ;//according to paper NOTE: what should this be?
-     private static final double gammaLa2W = 0.03;//according to paper NOTE: what should this be?
+     private static final double gammaLa1W = 0 ;
+     private static final double gammaLa2W = 0.03;
 
      private static final double max = 1.0;
      private static final double min = -0.2;
@@ -24,8 +24,8 @@ public class bilingualInteractiveActivation{
 
      private String[] lexicon1;
      private String[] lexicon2;
-     private String W_FILE1; //= "combined_possibles.txt";//"testwords.txt";
-     private String W_FILE2;// = "combined_dutch_possibles.txt";//"testwords.txt";
+     private String W_FILE1;
+     private String W_FILE2;
      private static final String L_SEG = "letter_segmentation.txt";
      private ArrayList<boolean[]> uc;
      private ArrayList<ArrayList<Unit>> featureLevel;
@@ -43,6 +43,9 @@ public class bilingualInteractiveActivation{
           instantiateNetwork();
      }
 
+     /* Models the response times for a given list of words, not clearing the
+      * network between each word. Returns a list of response times.
+      */
      public ArrayList<Integer> modelSequenceResponseTimes(ArrayList<String> words, double threshold, int language){
           clearNetwork();
           ArrayList<Integer> results = new ArrayList<Integer>();
@@ -57,6 +60,9 @@ public class bilingualInteractiveActivation{
           }
           return results;
      }
+     /* Models the reponse times for a given list of words, clearing the
+      * network after each. Returns an everage response time for the list of words.
+      */
      public double responseTimes(ArrayList<String> words, double threshold, int language){
           double totalAverage=0;
           for(String word : words){
@@ -67,6 +73,9 @@ public class bilingualInteractiveActivation{
           }
           return totalAverage/words.size();
      }
+     /* Models response time for a given word by running the model until the
+      * response strength of the correct word unit is above a given threshold.
+      */
      private int modelResponseTime(String word, double threshold, int language){
           Unit wordUnit=null;
           try{
@@ -100,11 +109,6 @@ public class bilingualInteractiveActivation{
           int cycles = 0;
           while(probability<threshold){
                interact(input);
-               /*ArrayList<ArrayList<Double>> results = getLetterActivationOutput();
-               for(ArrayList<Double> result : results){
-                    System.out.println(result);
-               }
-               System.out.println();*/
                double totalResponse = 0.0;
                for(Unit wordUnitTemp : wordLevel1){
                     totalResponse+=wordUnitTemp.getResponseStrength(oscaleW);
@@ -118,7 +122,10 @@ public class bilingualInteractiveActivation{
           }
           return cycles;
      }
-     public void modelWord(String word, int cycles, int num_results){
+     /* Runs a given word through the model for a set number of cycles, and
+      * writes the most activated words' activations over time to an output file.
+      */
+     public void modelWord(String word, int cycles, int num_results, String outputFileName){
           ArrayList<ArrayList<Double>> results = new ArrayList<ArrayList<Double>>();
           boolean[][] input = loadWord(word);
 
@@ -127,12 +134,16 @@ public class bilingualInteractiveActivation{
                results.add(getActivationOutput());
                //writeOutput("testresults.txt");
           }
-          output(results, num_results);
+          output(results, num_results, outputFileName);
 
      }
-     private void output(ArrayList<ArrayList<Double>> results, int num_results){
+     /* Takes in a list of activations over time for all the words in the lexicon
+      * then writes the top num_results of them to an output file. These top
+      * results are the ones with the highest activations at the end of the cycles.
+      */
+     private void output(ArrayList<ArrayList<Double>> results, int num_results, String outputFileName){
           try{
-               BufferedWriter bw = new BufferedWriter(new FileWriter("testresults2.txt"));
+               BufferedWriter bw = new BufferedWriter(new FileWriter(outputFileName));
                bw.close();
           } catch(Exception e){
                System.out.println(e);
@@ -159,9 +170,11 @@ public class bilingualInteractiveActivation{
                }
                top_results.add(top_result);
           }
-          writeOutput(top_results, "testresults2.txt", top_words);
+          writeOutput(top_results, outputFileName, top_words);
 
      }
+     /* Writes a list of activations over time to an output file
+     */
      private void writeOutput(ArrayList<ArrayList<Double>> top_results, String filename, ArrayList<String> top_words){
           try{
                BufferedWriter bw = new BufferedWriter(new FileWriter(filename, true));
@@ -179,6 +192,8 @@ public class bilingualInteractiveActivation{
                System.exit(1);
           }
      }
+     /* Returns a list of activations for all words
+     */
      private ArrayList<Double> getActivationOutput(){
           ArrayList<Double> results = new ArrayList<Double>();
           for(Unit word : wordLevel1){
@@ -189,6 +204,9 @@ public class bilingualInteractiveActivation{
           }
           return results;
      }
+     /* Returns a list of response strengths calculated from activations and
+      * average activations from all words
+      */
      private ArrayList<Double> getResponseStrengthOutput(){
           ArrayList<Double> results = new ArrayList<Double>();
           for(Unit word : wordLevel1){
@@ -199,6 +217,8 @@ public class bilingualInteractiveActivation{
           }
           return results;
      }
+     /* Returns a list of activations for all letters for testing purposes.
+     */
      private ArrayList<ArrayList<Double>> getLetterActivationOutput(){
           ArrayList<ArrayList<Double>> results = new ArrayList<ArrayList<Double>>();
           for(int i=0; i<4; i++){
@@ -211,6 +231,9 @@ public class bilingualInteractiveActivation{
           return results;
      }
 
+     /* A single cycle of the model, this updates the net inputs caused by
+     * every connection, then updates activations based on that.
+     */
      private void interact(boolean[][] input){
           featureToLetter(input);
           letterToWord();
@@ -221,6 +244,8 @@ public class bilingualInteractiveActivation{
           letterToLetter();
           update();
      }
+     /* Updates all activations
+      */
      private void update(){
           for(int i = 0; i<WLEN; i++){
                for(Unit letter : letterLevel.get(i)){
@@ -242,6 +267,8 @@ public class bilingualInteractiveActivation{
           }
      }
 
+     // These methods all update the net input based on excitatory or inhibitory
+     // connections and the set parameters
      private void featureToLetter(boolean[][] input){
           for(int i = 0; i<WLEN; i++){
                ArrayList<Unit> features = featureLevel.get(i);
@@ -369,6 +396,10 @@ public class bilingualInteractiveActivation{
                }
           }
      }
+
+     /* Updates the activation of every unit, based off their net input and a
+      * variety of parameters. Activations are bounded by a max and min.
+      */
      private void updateUnitActivation(Unit a){
           double net = a.getNet();
           double act = a.getActivation();
@@ -386,6 +417,8 @@ public class bilingualInteractiveActivation{
           }
      }
 
+     // Instantiates a network with feature, letter, word, and language layers,
+     // as well as instantiating the connections between them
      private void instantiateNetwork(){
           featureLevel = new ArrayList<ArrayList<Unit>>();
           letterLevel = new ArrayList<ArrayList<Unit>>();
@@ -467,6 +500,8 @@ public class bilingualInteractiveActivation{
           }
      }
 
+     /* Loads a file of words into a String array
+      */
      private String[] loadWords(String filename){
           //NOTE: where to split on? be consistent? currently splits on lines
           try{
@@ -485,6 +520,8 @@ public class bilingualInteractiveActivation{
                return null;
           }
      }
+     /* Loads a given string into a boolean array of features for each letter
+      */
      private boolean[][] loadWord(String word){
           if (word.length()!=WLEN){
                System.out.println("Incorrect word size, invalid input");
@@ -498,6 +535,11 @@ public class bilingualInteractiveActivation{
           }
           return input;
      }
+
+     /* Loads the letter_segmentation.txt file of letter features into the
+      * uc table, to be used when loading input strings into features and in
+      * instantiating feature-letter connections.
+      */
      private void loadSegs(){
           try{
                File segs = new File(L_SEG);
@@ -524,6 +566,9 @@ public class bilingualInteractiveActivation{
           }
      }
 
+     /* Clears the network by setting all units to their resting activations.
+      * For most this is zero, but for the english wordLevel this is -.3
+     */
      private void clearNetwork(){
           for(ArrayList<Unit> letters : letterLevel){
                for(Unit letter : letters){

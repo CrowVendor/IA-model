@@ -20,7 +20,7 @@ public class interactiveActivation{
      private static final double oscaleL = 10;
 
      private static final String L_SEG = "letter_segmentation.txt";
-     private String W_FILE;// = "totalCombined.txt";//"combined_possibles.txt";//"testwords.txt";
+     private String W_FILE;
      private ArrayList<boolean[]> uc;
      private String[] lexicon;
      private ArrayList<ArrayList<Unit>> featureLevel;
@@ -35,6 +35,9 @@ public class interactiveActivation{
           instantiateNetwork();
      }
 
+     /* Models the response times for a given list of words, not clearing the
+      * network between each word. Returns a list of response times.
+      */
      public ArrayList<Integer> modelSequenceResponseTimes(ArrayList<String> words, double threshold){
           clearNetwork();
           ArrayList<Integer> results = new ArrayList<Integer>();
@@ -43,6 +46,9 @@ public class interactiveActivation{
           }
           return results;
      }
+     /* Models the reponse times for a given list of words, clearing the
+      * network after each. Returns an everage response time for the list of words.
+      */
      public double responseTimes(ArrayList<String> words, double threshold){
           double totalAverage=0;
           for(String word : words){
@@ -52,6 +58,9 @@ public class interactiveActivation{
           }
           return totalAverage/words.size();
      }
+     /* Models response time for a given word by running the model until the
+      * response strength of the correct word unit is above a given threshold.
+      */
      private int modelResponseTime(String word, double threshold){
           Unit wordUnit=null;
           try{
@@ -84,21 +93,27 @@ public class interactiveActivation{
           }
           return cycles;
      }
-     public void modelWord(String word, int cycles, int num_results){
+     /* Runs a given word through the model for a set number of cycles, and
+      * writes the most activated words' activations over time to an output file.
+      */
+     public void modelWord(String word, int cycles, int num_results, String outputFileName){
           ArrayList<ArrayList<Double>> results = new ArrayList<ArrayList<Double>>();
           boolean[][] input = loadWord(word);
 
           for(int i = 0; i<cycles; i++){
                interact(input);
                results.add(getActivationOutput());
-               //writeOutput("testresults.txt");
           }
-          output(results, num_results);
+          output(results, num_results, outputFileName);
 
      }
-     private void output(ArrayList<ArrayList<Double>> results, int num_results){
+     /* Takes in a list of activations over time for all the words in the lexicon
+      * then writes the top num_results of them to an output file. These top
+      * results are the ones with the highest activations at the end of the cycles.
+      */
+     private void output(ArrayList<ArrayList<Double>> results, int num_results, String outputFileName){
           try{
-               BufferedWriter bw = new BufferedWriter(new FileWriter("testresults.txt"));
+               BufferedWriter bw = new BufferedWriter(new FileWriter(outputFileName));
                bw.close();
           } catch(Exception e){
                System.out.println(e);
@@ -121,9 +136,11 @@ public class interactiveActivation{
                }
                top_results.add(top_result);
           }
-          writeOutput(top_results, "testresults.txt", top_words);
+          writeOutput(top_results, outputFileName, top_words);
 
      }
+     /* Writes a list of activations over time to an output file
+     */
      private void writeOutput(ArrayList<ArrayList<Double>> top_results, String filename, ArrayList<String> top_words){
           try{
                BufferedWriter bw = new BufferedWriter(new FileWriter(filename, true));
@@ -141,6 +158,8 @@ public class interactiveActivation{
                System.exit(1);
           }
      }
+     /* Returns a list of activations for all words 
+     */
      private ArrayList<Double> getActivationOutput(){
           ArrayList<Double> results = new ArrayList<Double>();
           for(Unit word : wordLevel){
@@ -148,6 +167,9 @@ public class interactiveActivation{
           }
           return results;
      }
+     /* Returns a list of response strengths calculated from activations and
+      * average activations from all words
+      */
      private ArrayList<Double> getResponseStrengthOutput(){
           ArrayList<Double> results = new ArrayList<Double>();
           for(Unit word : wordLevel){
@@ -156,6 +178,9 @@ public class interactiveActivation{
           return results;
      }
 
+     /* A single cycle of the model, this updates the net inputs caused by
+      * every connection, then updates activations based on that.
+      */
      private void interact(boolean[][] input){
           featureToLetter(input);
           letterToWord();
@@ -164,6 +189,8 @@ public class interactiveActivation{
           letterToLetter();
           update();
      }
+     /* Updates all activations
+      */
      private void update(){
           for(int i = 0; i<WLEN; i++){
                for(Unit letter : letterLevel.get(i)){
@@ -177,6 +204,8 @@ public class interactiveActivation{
           }
      }
 
+     // These methods all update the net input based on excitatory or inhibitory
+     // connections and the set parameters
      private void featureToLetter(boolean[][] input){
           for(int i = 0; i<WLEN; i++){
                ArrayList<Unit> features = featureLevel.get(i);
@@ -266,6 +295,10 @@ public class interactiveActivation{
                }
           }
      }
+
+     /* Updates the activation of every unit, based off their net input and a
+      * variety of parameters. Activations are bounded by a max and min.
+      */
      private void updateUnitActivation(Unit a){
           double net = a.getNet();
           double act = a.getActivation();
@@ -283,6 +316,8 @@ public class interactiveActivation{
           }
      }
 
+     // Instantiates a network with feature, letter, and word layers, as well
+     // as instantiating the connections between them
      private void instantiateNetwork(){
           featureLevel = new ArrayList<ArrayList<Unit>>();
           letterLevel = new ArrayList<ArrayList<Unit>>();
@@ -353,8 +388,9 @@ public class interactiveActivation{
           }
      }
 
+     /* Loads a file of words into a String array
+      */
      private String[] loadWords(String filename){
-          //NOTE: where to split on? be consistent? currently splits on lines
           try{
                Scanner wordScan = new Scanner(new File(filename));
                int i=0;
@@ -362,8 +398,6 @@ public class interactiveActivation{
                while(wordScan.hasNextLine()){
                     words.add(wordScan.nextLine());
                }
-               //String[] words = wordScan.nextLine().replace(" ", "").split("\n");
-               //System.out.println(words[1]);
                return words.toArray(new String[words.size()]);
           } catch (Exception e){
                System.out.println(e);
@@ -371,6 +405,8 @@ public class interactiveActivation{
                return null;
           }
      }
+     /* Loads a given string into a boolean array of features for each letter
+      */
      private boolean[][] loadWord(String word){
           if (word.length()!=WLEN){
                System.out.println("Incorrect word size, invalid input");
@@ -384,6 +420,10 @@ public class interactiveActivation{
           }
           return input;
      }
+     /* Loads the letter_segmentation.txt file of letter features into the
+      * uc table, to be used when loading input strings into features and in
+      * instantiating feature-letter connections.
+      */
      private void loadSegs(){
           try{
                File segs = new File(L_SEG);
@@ -410,6 +450,8 @@ public class interactiveActivation{
           }
      }
 
+     /* Sets all activations to zero
+      */
      private void clearNetwork(){
           for(ArrayList<Unit> letters : letterLevel){
                for(Unit letter : letters){
