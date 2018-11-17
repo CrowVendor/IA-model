@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6700) (preloaded format=pdflatex 2018.11.13)  13 NOV 2018 16:25
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6700) (preloaded format=pdflatex 2018.11.13)  16 NOV 2018 20:35
 entering extended mode
 **./cogsci_template.tex
 (cogsci_template.tex
@@ -129,20 +129,26 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 39.
 
 
-LaTeX Warning: Citation `MclellandRumelhart1981a' undefined on input line 43.
-
-
-LaTeX Warning: Citation `DijkstraVanheuven1998a' undefined on input line 43.
+LaTeX Warning: Citation `DijkstraVanHeuven1998a' undefined on input line 43.
 
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 46.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 47.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 52.
 
-LaTeX Warning: Citation `DijkstraVanheuven1998a' undefined on input line 64.
+LaTeX Warning: Citation `RaynerPollatsek1989a' undefined on input line 57.
 
 
-LaTeX Warning: Citation `MclellandRumelhart1981a' undefined on input line 64.
+LaTeX Warning: Citation `CookBassetti2005a' undefined on input line 57.
+
+
+LaTeX Warning: Citation `DijkstraVanHeuven2002a' undefined on input line 58.
+
+
+LaTeX Warning: Citation `DijkstraVanheuven1998a' undefined on input line 68.
+
+
+LaTeX Warning: Citation `MclellandRumelhart1981a' undefined on input line 68.
 
 [1{/Accounts/bremerw/Library/Application Support/MiKTeX/texmfs/data/pdftex/conf
 ig/pdftex.map}
@@ -151,51 +157,54 @@ ig/pdftex.map}
 
 ]
 
-LaTeX Warning: Citation `NewellSimon1972a' undefined on input line 98.
+LaTeX Warning: Citation `NewellSimon1972a' undefined on input line 102.
 
 
-LaTeX Warning: Citation `ChalnickBillman1988a' undefined on input line 102.
+LaTeX Warning: Citation `ChalnickBillman1988a' undefined on input line 106.
 
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 111.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 115.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 111.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 115.
+[2]
 
-LaTeX Warning: Citation `Feigenbaum1963a' undefined on input line 188.
-
-
-LaTeX Warning: Citation `Hill1983a' undefined on input line 189.
+LaTeX Warning: Citation `Feigenbaum1963a' undefined on input line 192.
 
 
-LaTeX Warning: Citation `OhlssonLangley1985a' undefined on input line 190.
+LaTeX Warning: Citation `Hill1983a' undefined on input line 193.
 
 
-LaTeX Warning: Citation `Matlock2001' undefined on input line 192.
+LaTeX Warning: Citation `OhlssonLangley1985a' undefined on input line 194.
 
 
-LaTeX Warning: Citation `ShragerLangley1990a' undefined on input line 194.
+LaTeX Warning: Citation `Matlock2001' undefined on input line 196.
+
+
+LaTeX Warning: Citation `ShragerLangley1990a' undefined on input line 198.
 
 No file cogsci_template.bbl.
-[2] (cogsci_template.aux)
+[3
+
+] (cogsci_template.aux)
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 954 strings out of 492970
- 12617 string characters out of 3125629
- 80747 words of memory out of 3000000
- 4866 multiletter control sequences out of 15000+200000
+ 962 strings out of 492970
+ 12837 string characters out of 3125629
+ 81747 words of memory out of 3000000
+ 4874 multiletter control sequences out of 15000+200000
  34637 words of font info for 69 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 26i,9n,21p,708b,227s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 26i,9n,21p,1117b,227s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/Library/Application Support/MiKTeX/texmfs/install/fonts/enc/dvips/base/8r.e
 nc}</Library/Application Support/MiKTeX/texmfs/install/fonts/type1/urw/times/ut
 mb8a.pfb></Library/Application Support/MiKTeX/texmfs/install/fonts/type1/urw/ti
 mes/utmr8a.pfb>
-Output written on cogsci_template.pdf (2 pages, 41215 bytes).
+Output written on cogsci_template.pdf (3 pages, 43492 bytes).
 PDF statistics:
- 18 PDF objects out of 1000 (max. 8388607)
+ 21 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

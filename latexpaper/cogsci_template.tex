@@ -40,12 +40,12 @@ Northfield, MN 55057 USA}
 
 
 \begin{abstract}
-Word recognition is so integral a part of our linguistic cognition processes that we barely even acknowledge its existence, despite its clear importance to our language processing skills. The Interactive Activation (IA) model \cite{MclellandRumelhart1981a} was developed as a representation of this process based on the assumption that we move from visual feature recognition to corresponding letters and then to words, in a “spreading activation” style model. The Bilingual Interactive Activation (BIA) model \cite{DijkstraVanheuven1998a} is a modified version of the IA model representing word recognition in bilingual learners. DISCUSS CONCLUSION HERE
+Word recognition is a central component of human language cognition, and more specifically of cognitive activity during the fundamental human task of reading. We implement here two spreading activation models of word recognition, the Bilingual Interactive Activation (BIA) model and the Interactive Activation (IA) model on which it is based. We test them extensively on both isolated word cases and sequential sets of input, using a combined lexicon of Dutch and English words. In a comparison of the two models and a human study of word recognition response time in bilingual Dutch-English speakers \cite{DijkstraVanHeuven1998a}, we find that the models do return moderately accurate results in the isolated word cases, but do not necessarily produce useful data in the sequential case.
+
 
 
 \textbf{Keywords:}
-add your choice of indexing terms or keywords; kindly use a
-semicolon; between each term
+Word recognition; Bilingual Interactive Activation
 \end{abstract}
 
 
@@ -53,6 +53,10 @@ semicolon; between each term
 
 Introduction should summarize the following: word recognition as a part of human language cognition, the role of models in increasing understanding of human word recognition, acknowledging the progress in more recent word recognition models while simultaneously discussing the maintained relevance of the older BIA model, our model/differences between our model and others, the experiments we performed with our model, and our results.
 
+\subsection{Overview}
+Word recognition is so fundamental a part of our internal language processing that we almost never stop to recognize it, despite its incredible functionality. We process texts accessed visually at an average rate of 300 words per minute \cite{RaynerPollatsek1989a} or 5 words per second, and the central function in that process is visual word recognition. During the process of reading we perform not only the visual processing of line segments to letters and letters to words, but also the grammatical and phonological processes necessary to contrive sense from the passage \cite{CookBassetti2005a}  .\\
+Bilingual word processing and recognition is interesting in particular due to some of the questions it raises. The primary two are as follows: first, when word candidates similar to the input string are activated, are candidates from both languages considered, or from only one? Secondly, is the internal lexical “database” stored as one single integrated lexicon or in two distinctly separate ones? These two possibilities, that of distinctly separate linguistic processing and competition and that of more or less integrated competition, are generally referred to as language selective and language non-selective access hypotheses respectively \cite{DijkstraVanHeuven2002a}. All models and data referred to in this work operate under the assumption of language non-selective access. \\
+In this work, we utilize an implementation of the Bilingual Interactive Activation (BIA) model as well as the more monolingual Interactive Activation (IA) model with varying sets of bilingual input words. The input words were chosen based on a reference set of human data in which subjects were presented with those same words. Our languages of choice are Dutch and English, as they align with the human data. In a final test, we present words to the model sequentially without resetting activation values, in order to assess the model’s viability as a representation of word recognition in context. In terms of the isolated tests, the model performed well: the BIA model functioned as a more accurate representation of the natively Dutch bilingual subjects of the human study than the IA model, both becoming certain more quickly in the case of the native language and slightly more slowly in the case of the non-native language. On the other hand, the sequential test revealed little useful data, though that in itself lends us insight on the nature and usefulness of the BIA model. 
 
 \section{Background}
 
@@ -199,7 +203,7 @@ edited volume, respectively.
 \setlength{\bibleftmargin}{.125in}
 \setlength{\bibindent}{-\bibleftmargin}
 
-\bibliography{CogSci_Template}
+\bibliography{CogSci_Template.bib}
 
 
 \end{document}
